@@ -1,0 +1,25 @@
+name: Unzip File
+
+on:
+  workflow_dispatch:
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Unzip File
+        run: |
+          sudo apt update
+          sudo apt install unzip -y
+          unzip main.zip -d ./unzipped
+          
+      - name: Commit unzipped files
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git commit -m "Unzipped new.zip"
+          git push
