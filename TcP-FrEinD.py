@@ -1,4 +1,3 @@
-
 import requests, os, psutil, sys, jwt, pickle, json, binascii, time, urllib3, base64, datetime, re, socket, threading, ssl, pytz, aiohttp
 from protobuf_decoder.protobuf_decoder import Parser
 from xC4 import * 
@@ -22,25 +21,28 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Asyncio queue for API -> bot commands
 api_command_queue = asyncio.Queue()
 
-# ----------- API HANDLER (aiohttp) -----------
- async def process_api_queue():
+# --- Add this function somewhere near the top ---
+async def process_api_queue():
     global whisper_writer, online_writer, key, iv
     while True:
-        cmd_type, payload = await api_command_queue.get()
-        if cmd_type == "join_team":
-            teamcode = payload
-            try:
+        try:
+            cmd_type, payload = await api_command_queue.get()
+            if cmd_type == "join_team":
+                teamcode = payload
                 if not key or not iv or not whisper_writer or not online_writer:
                     print(f"[API] Cannot send join, bot not ready: {teamcode}")
-                    continue
-                EM = await GenJoinSquadsPacket(teamcode, key, iv)
-                await SEndPacKeT(whisper_writer, online_writer, 'OnLine', EM)
-                print(f"[API] Sent join squad packet for teamcode: {teamcode}")
-            except Exception as e:
-                print(f"[API] Error sending join: {e}")
-        else:
-            print(f"[API] Unknown command type: {cmd_type}")
-        await asyncio.sleep(0.1)  # small delay
+                else:
+                    try:
+                        EM = await GenJoinSquadsPacket(teamcode, key, iv)
+                        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', EM)
+                        print(f"[API] Sent join squad packet for teamcode: {teamcode}")
+                    except Exception as e:
+                        print(f"[API] Error sending join for {teamcode}: {e}")
+            else:
+                print(f"[API] Unknown command type: {cmd_type}")
+        except Exception as e:
+            print(f"[API Queue Error]: {e}")
+        await asyncio.sleep(0.05)
 
 # ----------- SERVER START  (aiohttp) -----------
 async def start_api_server():
@@ -607,9 +609,11 @@ async def MaiiiinE():
     print(f" - BoT STarTinG And OnLine on TarGet : {TarGeT} | BOT NAME : {acc_name}\n")
     print(f" - BoT sTaTus > GooD | OnLinE ! (:")    
     print(f" - Subscribe > Spideerio | Gaming ! (:")    
-    api_task = asyncio.create_task(start_api_server())
-    await asyncio.gather(task1, task2, api_task)
+    # <-- ADD this task -->
+    api_queue_task = asyncio.create_task(process_api_queue())
 
+    api_task = asyncio.create_task(start_api_server())
+    await asyncio.gather(task1, task2, api_task, api_queue_task)
 async def StarTinG():
     while True:
         try: await asyncio.wait_for(MaiiiinE() , timeout = 7 * 60 * 60)
