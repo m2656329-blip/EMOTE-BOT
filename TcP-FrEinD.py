@@ -54,18 +54,22 @@ async def emote_api_handler(request):
     except Exception as e:
         return web.json_response({'status': 'error', 'message': str(e)}, status=500)
 
+#EMOTES BY PARAHEX X CODEX
 
 async def start_api_server():
     app = web.Application()
     app.router.add_get('/api', api_handler)
+    # register the emote endpoint so /api/emote works
+    app.router.add_get('/api/emote', emote_api_handler)
+
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', 8080)  # 8080 port এ চলবে
+    # use PORT env so Render (or similar PaaS) can bind correctly
+    port = int(os.getenv("PORT", 8080))
+    site = web.TCPSite(runner, '0.0.0.0', port)
     await site.start()
-    print("[✅] API server running on http://localhost:8080/api?teamcode=123456")
-#EMOTES BY PARAHEX X CODEX
-
-
+    print(f"[✅] API server running on http://0.0.0.0:{port}/api")
+    print(f"[✅] Emote API running on http://0.0.0.0:{port}/api/emote?emoteid=123&uid=111")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
 
@@ -598,9 +602,10 @@ async def MaiiiinE():
 
     ToKen = MajoRLoGinauTh.token
     TarGeT = MajoRLoGinauTh.account_uid
-    global key, iv
+    global key, iv, region
     key = MajoRLoGinauTh.key
     iv = MajoRLoGinauTh.iv
+    region = MajoRLoGinauTh.region
     timestamp = MajoRLoGinauTh.timestamp
     
     LoGinDaTa = await GetLoginData(UrL , PyL , ToKen)
