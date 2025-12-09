@@ -77,7 +77,7 @@ async def start_api_server():
     runner = web.AppRunner(app)
     await runner.setup()
     # use PORT env so Render (or similar PaaS) can bind correctly
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 9090))
     site = web.TCPSite(runner, '0.0.0.0', port)
     await site.start()
     print(f"[✅] API server running on http://0.0.0.0:{port}/api")
@@ -491,7 +491,7 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
                         if inPuTMsG in ("hi", "hello", "fen", "salam"):
                             uid = response.Data.uid
                             chat_id = response.Data.Chat_ID
-                            message = 'Hello, Join\nTelegram : @cyberarchbd'
+                            message = 'Hello, Join\nTelegram : @axemoteserver'
                             P = await SEndMsG(response.Data.chat_type, message, uid, chat_id, key, iv)
                             await SEndPacKeT(whisper_writer, online_writer, 'ChaT', P)
                         # ---------- LIKE COMMAND ----------
@@ -554,8 +554,8 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
                                 f"[00FF00]@like <uid> → Send 100 Like\n"
                                 f"[00FF00]@a <uid1> <uid2> <emote_id> → Send emote to players\n"
                                 f"[00FF00]hi / hello / salam / fen[/] → Greet command\n\n"
-                                f"{get_random_color()} Bot Owner: Mr Rafi\n"
-                                f" Telegram: @cyberarchbd\n"
+                                f"{get_random_color()} Bot Owner: Ax ROMJAN\n"
+                                f" Telegram: @axemoteserver\n"
                                 f" Version: OB51"
                             )
                             P = await SEndMsG(response.Data.chat_type, help_text, uid, chat_id, key, iv)
