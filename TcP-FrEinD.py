@@ -77,7 +77,7 @@ async def start_api_server():
     runner = web.AppRunner(app)
     await runner.setup()
     # use PORT env so Render (or similar PaaS) can bind correctly
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 9090))
     site = web.TCPSite(runner, '0.0.0.0', port)
     await site.start()
     print(f"[✅] API server running on http://0.0.0.0:{port}/api")
